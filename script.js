@@ -85,4 +85,5 @@ function playRound(event) {
 // End the game and display the result
 function endGame() {
   if (userScore === computerScore) {
-    gameResult.textContent
+    gameResult.textContent}
+}
