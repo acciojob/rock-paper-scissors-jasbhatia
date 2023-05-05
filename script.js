@@ -1,89 +1,99 @@
 //your code here
-const gameNumberInput = document.getElementById("game-number");
-const playButton = document.getElementById("play-game");
-const choices = document.querySelectorAll(".choice");
-const roundResult = document.querySelector("[data-ns-test='round-result']");
-const roundsLeft = document.querySelector("[data-ns-test='rounds-left']");
-const userPoints = document.querySelector("[data-ns-test='user-points']");
-const computerPoints = document.querySelector("[data-ns-test='computer-points']");
-const gameResult = document.querySelector("[data-ns-test='game-result']");
+let roundInput = document.getElementById("gameInput");
 
-// Define the computer's choices
-const computerChoices = ["ROCK", "PAPER", "SCISSORS"];
+let playBtn = document.getElementById("playBtn");
 
-// Initialize game variables
-let turnsLeft, userScore, computerScore;
+let rockBtn = document.getElementById("rockBtn");
+let paperBtn = document.getElementById("paperBtn");
+let scissorBtn = document.getElementById("scissorBtn");
 
-// Event listener for the play button
-playButton.addEventListener("click", startGame);
+let compChoiceElement = document.getElementById("compChoiceElement");
+let userChoiceElement = document.getElementById("userChoiceElement");
+let roundResElement = document.getElementById("roundResElement");
 
-// Event listeners for the user choices
-choices.forEach(choice => {
-  choice.addEventListener("click", playRound);
-});
 
-// Start the game
-function startGame() {
-  turnsLeft = parseInt(gameNumberInput.value);
-  userScore = 0;
-  computerScore = 0;
+let userPointElement = document.getElementById("userPointElement");
+let compPointElement = document.getElementById("compPointElement");
+let remainingRoundElement = document.getElementById("remainingRoundElement");
 
-  roundsLeft.textContent = turnsLeft;
-  userPoints.textContent = userScore;
-  computerPoints.textContent = computerScore;
-  gameResult.textContent = "";
+playBtn.addEventListener('click', playGame);
 
-  enableChoices();
+rockBtn.addEventListener('click', userChoice)
+paperBtn.addEventListener('click', userChoice)
+scissorBtn.addEventListener('click', userChoice)
+
+let round = 0;
+let userPoint = 0;
+let compPoint = 0;
+function playGame() {
+    // first of all take how many rounds the user want to play
+    round = roundInput.value
+    console.log(round);
+    if (round > 0) {
+        // play the game
+        document.getElementById("game-container").style.display = "block";
+    }
+    else {
+        alert("Please enter a valid number")
+    }
 }
 
-// Enable user choices
-function enableChoices() {
-  choices.forEach(choice => {
-    choice.disabled = false;
-  });
+
+function userChoice(e) {
+    if (round > 0) {
+        console.log("User's choice ", e.target.value);
+        let userChoice = e.target.value;
+        // generate computer choice from rock paper and scissor
+        let choices = ["rock", "paper", "scissor"];
+        let compChoice = choices[Math.floor(Math.random() * 3)];
+        console.log("comp choice", compChoice);
+
+        // compare th user choice and computer choice for possible outcomes
+
+        // where user is goinng win
+        let roundRes = "draw";
+        if ((userChoice === "rock " && compChoice === "scissor") || (userChoice === "paper" && compChoice === "rock") || (userChoice === "scissor" && compChoice === "paper")) {
+            // console.log("User win");
+            roundRes = "win"
+            ++userPoint;
+            --round;
+        }
+        else if ((compChoice === "rock " && userChoice === "scissor") || (compChoice === "paper" && userChoice === "rock") || (compChoice === "scissor" && userChoice === "paper")) {
+            // console.log("Comp win");
+            roundRes = "lose"
+            ++compPoint;
+            --round;
+        }
+        else {
+            // console.log("Draw");
+            roundRes = "draw"
+            --round;
+        }
+
+        // update the information on the screen
+        compChoiceElement.innerHTML = compChoice;
+        userChoiceElement.innerHTML = userChoice;
+        roundResElement.innerHTML = roundRes;
+
+        userPointElement.innerHTML = userPoint;
+        compPointElement.innerHTML = compPoint;
+        remainingRoundElement.innerHTML = round;
+    }
+    // the rounds are over at this point
+    else {
+        // compare user point and computer point to decide the winner
+        if (userPoint > compPoint) {
+            alert("User win the game");
+        }
+        else if (userPoint < compPoint) {
+            alert("Computer win the game");
+        }
+        else {
+            alert("Draw");
+        }
+    }
 }
 
-// Disable user choices
-function disableChoices() {
-  choices.forEach(choice => {
-    choice.disabled = true;
-  });
-}
+  
 
-// Play a round of the game
-function playRound(event) {
-  const userChoice = event.target.getAttribute("data-ns-test");
-  const computerChoice = computerChoices[Math.floor(Math.random() * 3)];
-
-  roundResult.textContent = "";
-
-  if (userChoice === computerChoice) {
-    roundResult.textContent = "TIE";
-  } else if (
-    (userChoice === "rock" && computerChoice === "SCISSORS") ||
-    (userChoice === "paper" && computerChoice === "ROCK") ||
-    (userChoice === "scissors" && computerChoice === "PAPER")
-  ) {
-    roundResult.textContent = "WON";
-    userScore++;
-  } else {
-    roundResult.textContent = "LOSE";
-    computerScore++;
-  }
-
-  turnsLeft--;
-  roundsLeft.textContent = turnsLeft;
-  userPoints.textContent = userScore;
-  computerPoints.textContent = computerScore;
-
-  if (turnsLeft === 0) {
-    disableChoices();
-    endGame();
-  }
-}
-
-// End the game and display the result
-function endGame() {
-  if (userScore === computerScore) {
-    gameResult.textContent}
-}
+  
